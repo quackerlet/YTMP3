@@ -36,12 +36,18 @@ def main():
       # TODO: allow the user to select their own download location
       download_location = str(os.path.join(Path.home(), 'Downloads/ytmp3'))
 
-      videos.append(Video(stream, yt.title, yt.author, yt.thumbnail_url, output_path = download_location, filename = f'{stream.title}.mp4'))
+      title = input(f'Please enter the title of the song, or press the Enter key to use the default of {yt.title}\n>>')
+      title = yt.title if title == "" else title
 
-      print(f'{yt.title} queued for download. {len(videos)} items in the queue.')
+      author = input(f'Please enter the name of the artist, or press the Enter key to use the default of {yt.author}\n>>')
+      author = yt.author if author == "" else author
+
+      videos.append(Video(stream, title, author, yt.thumbnail_url, output_path = download_location, filename = f'{title}.mp4'))
+
+      print(f'{title} queued for download. {len(videos)} items in the queue.\n')
 
     except VideoUnavailable:
-      print(f'Video {url} is unavailable')
+      print(f'Video {url} is unavailable\n')
 
   download_files(videos)
   print('Goodbye!')
