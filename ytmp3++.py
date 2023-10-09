@@ -34,7 +34,7 @@ def main():
       stream = yt.streams.filter(file_extension= 'mp4').first()
 
       # TODO: allow the user to select their own download location
-      download_location = str(os.path.join(Path.home(), 'Downloads/mp3'))
+      download_location = str(os.path.join(Path.home(), 'Downloads/ytmp3'))
 
       videos.append(Video(stream, yt.title, yt.author, yt.thumbnail_url, output_path = download_location, filename = f'{stream.title}.mp4'))
 
