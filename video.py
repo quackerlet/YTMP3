@@ -1,7 +1,7 @@
 import urllib.request
 import eyed3
 import os
-os.environ["IMAGEIO_FFMPEG_EXE"] = "/opt/homebrew/bin/ffmpeg"
+
 from eyed3.id3.frames import ImageFrame
 from moviepy.editor import *
 
@@ -9,6 +9,7 @@ from moviepy.editor import *
 
 class Video:
   def __init__(self, stream, title, author, thumbnail_url, output_path = None, filename = None, filename_prefix = None, skip_existing = True):
+    # all fields as defined in PyTube
     self.stream = stream
     self.title = title
     self.author = author
@@ -19,25 +20,27 @@ class Video:
     self.skip_existing = skip_existing
   
   def download(self):
+    # downloads the mp4 file from youtube
     self.stream.download(output_path = self.output_path, filename = self.filename, filename_prefix = self.filename_prefix, skip_existing = self.skip_existing)    
     
-    # following code from https://stackoverflow.com/questions/65668113/how-to-set-thumbnail-for-mp3-using-eyed3-python-module    
-    mp4filepath = self.output_path + '/' + self.filename
+    # create file paths for mp4 and mp3 file
+    mp4filepath = self.output_path + '/' + self.title + '.mp4'
     mp3filepath = self.output_path + '/' + self.title + '.mp3'
 
+    # write mp4 data into mp3 file
     video = VideoFileClip(mp4filepath)
     video.audio.write_audiofile(mp3filepath)
 
-
+    # load mp3 file to add data to it
     audiofile = eyed3.load(mp3filepath)
 
     if (audiofile.tag == None):
-      print('init tag')
       audiofile.initTag()
     
     audiofile.tag.title = self.title
     audiofile.tag.author = self.author
 
+    # gets the image in thumbnail_url and sets the image to it
     response = urllib.request.urlopen(self.thumbnail_url)
     imagedata = response.read()
     audiofile.tag.images.set(ImageFrame.FRONT_COVER, imagedata, 'image/jpeg')
@@ -46,5 +49,7 @@ class Video:
 
     video.close()
     
+    # delete the mp4 file
+    # TODO: In future may want to add support for only mp4 files
     os.remove(mp4filepath)
     
