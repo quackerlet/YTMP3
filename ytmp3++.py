@@ -38,10 +38,13 @@ def main():
 
       videos.append(Video(stream, yt.title, yt.author, yt.thumbnail_url, output_path = download_location, filename = f'{stream.title}.mp4'))
 
+      print(f'{yt.title} queued for download. {len(videos)} items in the queue.')
+
     except VideoUnavailable:
       print(f'Video {url} is unavailable')
 
   download_files(videos)
+  print('Goodbye!')
 
 main()
 
