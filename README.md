@@ -9,7 +9,9 @@
 Unfortunately, the only way to use `YTMP3++` is by either cloning the repo or downloading the code. There are also a few libraries needed that can be installed with the following:
 
 `$ pip install PyTube`
+
 `$ pip install EyeD3`
+
 `$ pip install moviepy`
 
 It is also required that you have `FFMPEG` installed on your system. It should be installed whenever you install `moviepy`, but it seems that it doesn't always turn out that way :slightly_frowning_face:.
