@@ -1,6 +1,8 @@
 import urllib.request
-from mutagen.mp3 import MP3
-from mutagen.id3 import ID3, APIC, error
+import eyed3
+import os
+from moviepy.editor import *
+from eyed3.id3.frames import ImageFrame
 
 
 class Video:
@@ -18,17 +20,31 @@ class Video:
     self.stream.download(output_path = self.output_path, filename = self.filename, filename_prefix = self.filename_prefix, skip_existing = self.skip_existing)    
     
     # following code from https://stackoverflow.com/questions/65668113/how-to-set-thumbnail-for-mp3-using-eyed3-python-module
-    # audio = MP3(self.output_path + '/' + self.filename, ID3=ID3)
+    
+    urllib.request.urlretrieve(self.thumbnail_url, "tmp.jpg")
+    
+    mp4filepath = self.output_path + '/' + self.filename
+    mp3filepath = self.output_path + '/' + self.title + '.mp3'
 
-    # urllib.request.urlretrieve(self.thumbnail_url, "tmp.jpg")
+    video = VideoFileClip(mp4filepath)
+    video.audio.write_audiofile(mp3filepath)
 
-    # audio.tags.add(
-    #   APIC(
-    #     encoding=3,  # 3 is for utf-8
-    #     mime="image/jpeg",  # can be image/jpeg or image/png
-    #     type=3,  # 3 is for the cover image
-    #     desc='Cover',
-    #     data=open("tmp.jpg", mode='rb').read()
-    #   )
-    # )
+
+    audiofile = eyed3.load(mp3filepath)
+
+    if (audiofile.tag == None):
+      print('init tag')
+      audiofile.initTag()
+    
+    audiofile.tag.title = self.title
+    audiofile.tag.author = self.author
+
+    audiofile.tag.images.set(ImageFrame.FRONT_COVER, open("tmp.jpg", 'rb').read(), 'image/jpeg')
+
+    audiofile.tag.save(version=eyed3.id3.ID3_V2_3)
+
+    video.close()
+    
+    os.remove('tmp.jpg')
+    os.remove(mp4filepath)
     
