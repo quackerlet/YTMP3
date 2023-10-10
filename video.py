@@ -4,6 +4,8 @@ import os
 
 from eyed3.id3.frames import ImageFrame
 from moviepy.editor import *
+from PIL import Image
+
 
 
 
@@ -40,10 +42,38 @@ class Video:
     audiofile.tag.title = self.title
     audiofile.tag.author = self.author
 
-    # gets the image in thumbnail_url and sets the image to it
+    ### THUMBNAIL ###
+    # NOTE: gets image directly from url - DEPRECATED
     response = urllib.request.urlopen(self.thumbnail_url)
     imagedata = response.read()
     audiofile.tag.images.set(ImageFrame.FRONT_COVER, imagedata, 'image/jpeg')
+
+    # get photo and store it
+    # urllib.request.urlretrieve(self.thumbnail_url, "tmp.jpg")
+
+    # make the photo to be at max LENGTH x LENGTH px
+    # LENGTH = 300
+    # img = Image.open('tmp.jpg')
+
+    # make photo into square
+    # width, height = img.size
+    # min_len = min(width, height)
+    # x1 = max(0, (width - min_len) // 2)
+    # y1 = max(0, (height - min_len) // 2)
+    # x2 = min(width, (width + min_len) // 2)
+    # y2 = min(height, (height + min_len) // 2)
+    # img = img.crop((x1, y1, x2, y2))
+    # img.save('tmp_thumb.jpg')
+
+    # sq = Image.open('tmp_square.jpg')
+    # sq.thumbnail((LENGTH, LENGTH))
+    # sq.save('tmp_thumb.jpg')
+
+    # img.thumbnail((LENGTH, LENGTH))
+    # img.save('tmp_thumb.jpg')
+    # img.close()
+
+    # audiofile.tag.images.set(ImageFrame.FRONT_COVER, open("tmp_thumb.jpg", 'rb').read(), 'image/jpeg')
 
     audiofile.tag.save(version=eyed3.id3.ID3_V2_3)
 
@@ -52,4 +82,8 @@ class Video:
     # delete the mp4 file
     # TODO: In future may want to add support for only mp4 files
     os.remove(mp4filepath)
+
+    # remove temporary copies of thumbnail that we created
+    # os.remove('tmp.jpg')
+    # os.remove('tmp_thumb.jpg')
     

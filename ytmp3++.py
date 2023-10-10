@@ -42,7 +42,9 @@ def main():
       author = input(f'Please enter the name of the artist, or press the Enter key to use the default of {yt.author}\n>>')
       author = yt.author if author == "" else author
 
-      videos.append(Video(stream, title, author, yt.thumbnail_url, output_path = download_location, filename = f'{title}.mp4'))
+      thumbnail_url = f'https://img.youtube.com/vi/{yt.video_id}/maxresdefault.jpg'
+
+      videos.append(Video(stream, title, author, thumbnail_url, output_path = download_location, filename = f'{title}.mp4'))
 
       print(f'{title} queued for download. {len(videos)} items in the queue.\n')
 
