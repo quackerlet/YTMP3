@@ -4,7 +4,6 @@ import os
 
 from eyed3.id3.frames import ImageFrame
 from moviepy.editor import *
-from PIL import Image
 
 
 
@@ -22,6 +21,14 @@ class Video:
     self.skip_existing = skip_existing
   
   def download(self):
+    """
+    Downloads a video from the Video Object using the stream to the path specified
+    in *video.output_path* and calls it *video.filename*
+
+    :return: NONE
+    """
+
+
     # downloads the mp4 file from youtube
     self.stream.download(output_path = self.output_path, filename = self.filename, filename_prefix = self.filename_prefix, skip_existing = self.skip_existing)    
     
@@ -55,8 +62,4 @@ class Video:
     # delete the mp4 file
     # TODO: In future may want to add support for only mp4 files
     os.remove(mp4filepath)
-
-    # remove temporary copies of thumbnail that we created
-    os.remove('tmp.jpg')
-    os.remove('tmp_thumb.jpg')
     
